@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+//User:
+
+
+
+model User {
+  id            String @id @default(uuid())
+  email         String @unique
+  firstName     String
+  lastName      String
+  createAt      DateTime @default(now())
+  updateAt      DateTime
+  services      UserService[]// relacion muchos a muchos 1!
+}
+
+model Artist {
+  id            String @id @default(uuid())
+  email         String @unique
+  nickName      String @unique
+  name          String
+  lastName      String
+  city          String
+  country       String
+  services      ArtistService[]
+  // services      UserService[]// relacion muchos a muchos 1!
+}
+
+
+
+model Service {
+  id            String @id @default(uuid())
+  description   String 
+  price         Int
+  duration      Int
+  isActive      Boolean @default(false) 
+  createAt      DateTime @default(now())
+  updateAt      DateTime
+  users         UserService[]
+  artists       ArtistService[]
+  categorys     CategoryService[]
+  // services   Service[]// relacion muchos a muchos 1!
+}
+
+model Category {
+  id            Int @default(autoincrement()) @unique
+  name          String 
+  services      CategoryService[]
+
+}
+
+model UserService {
+  userId        String
+  user          User @relation(fields: [userId], references: [id])
+  serviceId     String
+  service       Service @relation(fields: [serviceId], references: [id])
+  @@id([userId, serviceId])//codificando la clave de la relacion
+}
+
+model ArtistService {
+  artistId      String
+  artist        Artist @relation(fields: [artistId], references: [id])
+  serviceId     String
+  service       Service @relation(fields: [serviceId], references: [id])
+  @@id([artistId, serviceId])//codificando la clave de la relacion
+}
+
+model CategoryService {
+  // id          Int @default(autoincrement())
+
+  serviceId     String 
+  service       Service @relation(fields: [serviceId], references: [id])
+  categoryId    Int
+  category      Category @relation(fields: [categoryId], references: [id])
+  @@id([serviceId, categoryId])//codificando la clave de la relacion
+
+}
+

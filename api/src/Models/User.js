@@ -3,6 +3,7 @@ const modelUser = {
     username: string,
     lastName: string,
     email: string,
+    password: string,// ? 
     city: string,
     country: string
 }
