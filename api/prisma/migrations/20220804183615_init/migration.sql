@@ -21,9 +21,11 @@ CREATE TABLE "Artist" (
     "country" TEXT NOT NULL,
     "eventName" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "price" INTEGER NOT NULL,
+    "imagesEvent" TEXT[],
     "duration" INTEGER NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT false,
+    "priceTime" INTEGER NOT NULL,
+    "priceDay" INTEGER NOT NULL,
 
     CONSTRAINT "Artist_pkey" PRIMARY KEY ("id")
 );

@@ -25,6 +25,8 @@ model User {
   show          User_Artist[]// relacion muchos a muchos 1!
 }
 
+
+
 model Artist {
   id            String @id @default(uuid())
   email         String @unique
@@ -35,9 +37,11 @@ model Artist {
   country       String
   eventName     String
   description   String 
-  price         Int
+  imagesEvent   String[]
   duration      Int
   isActive      Boolean @default(false) 
+  priceTime     Int
+  priceDay      Int
   userReq       User_Artist[]
   categorys     CategoryArtist[]// relacion muchos a muchos 1!
 }

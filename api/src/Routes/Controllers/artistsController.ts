@@ -5,17 +5,6 @@ const prisma = new PrismaClient({log: ['query', 'info']})//para ver que es lo qu
 //     const 
 // }
 
-export const getArtists = async (_req:Request, res:Response) => {
-    
-
-    const artists = await prisma.artist.findMany({
-        // include:{
-            
-        // }
-    })
-    res.status(200).json(artists)
-}
-
 export const createArtist = async (req:Request) => {
     // res.status(201).json('hola desde controllers')
     try {
@@ -28,9 +17,19 @@ export const createArtist = async (req:Request) => {
     }
 }
 
-//   "email":"juan@g.com",
-//   "nickName": "Diomedez Díaz",
-//   "name": "luimiguel",
-//   "lastName": "gutierrez",
-//   "city": "santa marta",
-//   "country": "venezuela"
+
+export const getArtists = async (_req:Request, res:Response) => {
+    
+
+    const artists = await prisma.artist.findMany({
+        // include:{
+            
+        // }
+    })
+    res.status(200).json(artists)
+}
+
+
+export const getArtistsId = async (_req:Request, _res:Response) => {
+
+} 

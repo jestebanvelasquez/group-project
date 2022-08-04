@@ -5,7 +5,7 @@ import categoryRoute from './categoryRoute'
 
 
 router.use('/artist', artistRoute)
-router.use('/ca', categoryRoute)
+router.use('/category', categoryRoute)
 
 
 export default router;
