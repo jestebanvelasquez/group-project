@@ -2,6 +2,7 @@ import express from'express';
 // import { PrismaClient } from '@prisma/client';
 const app = express();
 import router from './Routes/index'
+import {createCategorys} from './Routes/Controllers/categoryController'
 
 //midlewares:
 app.use(express.json())//trasnforma boy a json
@@ -16,6 +17,7 @@ app.get('/ping', (_req, res) =>{
 app.use('/', router)
 
 app.listen(PORT, () => {
+    createCategorys();
     console.log(`CONNECT TO: artistApp PORT:${PORT}`)
 })
 
