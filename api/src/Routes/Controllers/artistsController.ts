@@ -30,6 +30,28 @@ export const getArtists = async (_req:Request, res:Response) => {
 }
 
 
+
+
+export const getArtistsName = async (req: Request, res: Response) => {
+    console.log(req.query.name)
+
+    try {
+        // if (nickName) {
+        const artistName = await prisma.artist.findMany({
+            where: {
+                email: {
+                    contains: `${req.query.name}`,
+                },
+            },
+        })
+        // return artistName
+        res.status(201).json({ data: artistName })
+        // }
+    } catch (error) {
+        return error
+    }
+}
+
 export const getArtistsId = async (id:string) => {
     console.log('hola desde id');
     try {
