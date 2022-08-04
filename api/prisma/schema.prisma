@@ -22,7 +22,7 @@ model User {
   lastName      String
   createAt      DateTime @default(now())
   updateAt      DateTime
-  services      UserService[]// relacion muchos a muchos 1!
+  show          User_Artist[]// relacion muchos a muchos 1!
 }
 
 model Artist {
@@ -33,57 +33,72 @@ model Artist {
   lastName      String
   city          String
   country       String
-  services      ArtistService[]
-  // services      UserService[]// relacion muchos a muchos 1!
-}
-
-
-
-model Service {
-  id            String @id @default(uuid())
+  eventName     String
   description   String 
   price         Int
   duration      Int
   isActive      Boolean @default(false) 
-  createAt      DateTime @default(now())
-  updateAt      DateTime
-  users         UserService[]
-  artists       ArtistService[]
-  categorys     CategoryService[]
-  // services   Service[]// relacion muchos a muchos 1!
+  userReq       User_Artist[]
+  categorys     CategoryArtist[]// relacion muchos a muchos 1!
+}
+
+model User_Artist {
+  userId   String
+  user     User @relation(fields: [userId], references: [id])
+  artistId   String
+  artist     Artist @relation(fields: [artistId], references: [id])
+  @@id([userId, artistId])//codificando la clave de la relacion
+
 }
 
 model Category {
   id            Int @default(autoincrement()) @unique
   name          String 
-  services      CategoryService[]
+  artists      CategoryArtist[]
 
 }
 
-model UserService {
-  userId        String
-  user          User @relation(fields: [userId], references: [id])
-  serviceId     String
-  service       Service @relation(fields: [serviceId], references: [id])
-  @@id([userId, serviceId])//codificando la clave de la relacion
-}
+model CategoryArtist {
 
-model ArtistService {
-  artistId      String
-  artist        Artist @relation(fields: [artistId], references: [id])
-  serviceId     String
-  service       Service @relation(fields: [serviceId], references: [id])
-  @@id([artistId, serviceId])//codificando la clave de la relacion
-}
-
-model CategoryService {
-  // id          Int @default(autoincrement())
-
-  serviceId     String 
-  service       Service @relation(fields: [serviceId], references: [id])
+  artistId     String 
+  artist       Artist @relation(fields: [artistId], references: [id])
   categoryId    Int
   category      Category @relation(fields: [categoryId], references: [id])
-  @@id([serviceId, categoryId])//codificando la clave de la relacion
+  @@id([artistId, categoryId])//codificando la clave de la relacion
 
 }
+
+// model Service {
+//   id            String @id @default(uuid())
+//   description   String 
+//   price         Int
+//   duration      Int
+//   isActive      Boolean @default(false) 
+//   createAt      DateTime @default(now())
+//   updateAt      DateTime
+//   users         UserService[]
+//   artists       ArtistService[]
+//   categorys     CategoryService[]
+//   // services   Service[]// relacion muchos a muchos 1!
+// }
+
+
+
+// model UserService {
+//   userId        String
+//   user          User @relation(fields: [userId], references: [id])
+//   serviceId     String
+//   service       Service @relation(fields: [serviceId], references: [id])
+//   @@id([userId, serviceId])//codificando la clave de la relacion
+// }
+
+// model ArtistService {
+//   artistId      String
+//   artist        Artist @relation(fields: [artistId], references: [id])
+//   serviceId     String
+//   service       Service @relation(fields: [serviceId], references: [id])
+//   @@id([artistId, serviceId])//codificando la clave de la relacion
+// }
+
+
 

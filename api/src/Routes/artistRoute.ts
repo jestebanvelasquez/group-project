@@ -1,17 +1,20 @@
 import express from "express";// ESModules
-// import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 const router = express.Router()
-// const  prisma = new PrismaClient()
+import{ getArtists } from './Controllers/artistsController'
+const prisma = new PrismaClient()
 
-router.get('/',async (_req, res) => {
-    // const users = await prisma.artist.findMany({})
-    
-    // res.status(200).json({data:users})
-    res.send('estas haciendo un get a users')
+router.get('/', getArtists)
+
+// router.post('/', )
+
+router.post('/', async(req, res) =>{
+    const newUser = await prisma.artist.create({
+        data: req.body
+    })
+
+    res.status(201).json({data:newUser})
 })
 
-router.post('/', (_req, res) => {
-    res.send('haciendo un post')
-})
 
 export default router;
