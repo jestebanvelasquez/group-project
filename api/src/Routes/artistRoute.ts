@@ -21,8 +21,16 @@ router.post('/', async(req, res) =>{
 router.get('/', getArtists)
 
 //Method Get/:id:
-// http://localhost:4000/artist
-router.get('/:id', getArtistsId)
+// http://localhost:4000/artist/:id
+router.get('/:id', async (req, res) => {
+    try {
+        const artistId = await getArtistsId(req.params.id)
+
+        res.status(201).json({data:artistId})
+    } catch (error) {
+        
+    }
+})
 
 
 

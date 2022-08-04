@@ -30,6 +30,18 @@ export const getArtists = async (_req:Request, res:Response) => {
 }
 
 
-export const getArtistsId = async (_req:Request, _res:Response) => {
-
+export const getArtistsId = async (id:string) => {
+    console.log('hola desde id');
+    try {
+        
+        const artistId = await prisma.artist.findFirst({
+            where:{
+                id
+            }
+        })
+        return artistId
+        // res.status(200).json({data:artistId})
+    } catch (error) {
+        return error
+    }
 } 
