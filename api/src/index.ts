@@ -37,6 +37,3 @@ app.listen(PORT, () => {
     createCategorys();
     console.log(`CONNECT TO: artistApp PORT:${PORT}`)
 })
-
-
-
