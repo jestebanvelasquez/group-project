@@ -23,8 +23,13 @@ export const createCategorys = async () => {
     const categorysDb = await prisma.category.findMany()
     try {
         if(!categorysDb.length){
-            categorys.map(async(el) =>{
-                await prisma.category.create({data:el})
+            categorys.map(async(ele: { name: string; }) =>{
+                await prisma.category.create({
+                    data:{
+                        name: ele.name,
+                        asignedBy: 'ADMIN'
+                    }
+                })
             })
         }
     } catch (error) {

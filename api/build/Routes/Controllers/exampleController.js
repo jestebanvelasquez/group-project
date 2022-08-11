@@ -8,15 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express")); // ESModules
-const router = express_1.default.Router();
-const categoryController_1 = require("./Controllers/categoryController");
-router.get('/', (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allCategorys = yield (0, categoryController_1.getCategorys)();
-    res.status(201).json({ data: allCategorys });
-}));
-exports.default = router;
+exports.getExample = void 0;
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient({ log: ['query', 'info'] }); //para ver que es lo que hace prisma por debajo mediante la consola
+const getExample = () => __awaiter(void 0, void 0, void 0, function* () {
+    const categorys = yield prisma.category.findMany();
+    return categorys.sort();
+    // return('hola desde example')
+});
+exports.getExample = getExample;

@@ -1,16 +1,18 @@
 import express from "express";// ESModules
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 import { Response,Request } from 'express';
 
 const router = express.Router()
-import{ getArtists, getArtistsId, getArtistsName } from './Controllers/artistsController'
-const prisma = new PrismaClient()
+import{ getArtists, getArtistsId, getArtistsName, getUsersExample } from './Controllers/artistsController'
+
+
 
 //Method Post:
 // http://localhost:4000/artist
 
 router.post('/', async(req:Request, res:Response) =>{
-    const newUser = await prisma.artist.create({
+    const newUser = await prisma.show.create({
         data: req.body,
         
     })
@@ -20,7 +22,11 @@ router.post('/', async(req:Request, res:Response) =>{
 
 //Method Get:
 // http://localhost:4000/artist
-router.get('/', getArtists)
+router.get('/users-example', getUsersExample)
+// router.get('/users-example', getUsersExample)
+// router.get('/users-example', getUsersExample)
+// router.get('/users-example', getUsersExample)
+
 
 
 

@@ -10,67 +10,165 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Users {
+  id       String   @id @default(uuid())
+  email    String   @unique
+  password String
+  city     String
+  country  String
+  rol      UserRole
+  shows    ShowArtist[]
+  // AppArtsist AppArtsist[]
 
-//User:
-
-
-
-model User {
-  id            String @id @default(uuid())
-  email         String @unique
-  firstName     String
-  lastName      String
-  createAt      DateTime @default(now())
-  updateAt      DateTime
-  show          User_Artist[]// relacion muchos a muchos 1!
+  // rol         String
 }
 
-
-
-model Artist {
-  id            String @id @default(uuid())
-  email         String @unique
-  nickName      String @unique
-  name          String
-  lastName      String
-  city          String
-  country       String
+model Show {
+  id            String          @id @default(uuid())
+  nickName      String          @unique
   eventName     String
-  description   String 
+  description   String
   imagesEvent   String[]
   duration      Int
-  isActive      Boolean @default(false) 
+  isActive      Boolean         @default(false)
   priceTime     Int
   priceDay      Int
-  userReq       User_Artist[]
-  categorys     CategoryArtist[]// relacion muchos a muchos 1!
+  members       ShowArtist[]
+  // User_Show     UserRole[]
+  categories    Category_Show[]
+  // members             Users[]
+  // CalificationService CalificationService[] //calificaciones de los servicios!
 }
-
-model User_Artist {
-  userId   String
-  user     User @relation(fields: [userId], references: [id])
-  artistId   String
-  artist     Artist @relation(fields: [artistId], references: [id])
-  @@id([userId, artistId])//codificando la clave de la relacion
-
+model ShowArtist {
+  showId    String
+  show      Show @relation(fields: [showId], references: [id])
+  userId    String
+  user      Users @relation(fields: [userId], references: [id])
+  @@id([showId, userId])
 }
 
 model Category {
-  id            Int @default(autoincrement()) @unique
-  name          String 
-  artists      CategoryArtist[]
+  id        Int    @unique @default(autoincrement())
+  name      String
+  asignedBy String
 
+  //muchos shows contiene muchas categorias
+  shows     Category_Show[]
 }
 
-model CategoryArtist {
+//relacion entre usuario-Artista y show:
+model Category_Show {
+  showId     String
+  show       Show     @relation(fields: [showId], references: [id])
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  assignedAt DateTime @default(now())
 
-  artistId     String 
-  artist       Artist @relation(fields: [artistId], references: [id])
-  categoryId    Int
-  category      Category @relation(fields: [categoryId], references: [id])
-  @@id([artistId, categoryId])//codificando la clave de la relacion
-
+  @@id([showId, categoryId]) //codificando la clave de la relacion
 }
+
+model AppArtsist {
+  createdAt DateTime @default(now())
+  role      UserRole
+
+  //relacion explicita:
+  userId String
+  showId String
+  // user   Users  @relation(fields: [userId], references: [id])
+  // show   Show   @relation(fields: [showId], references: [id])
+
+  //PARA PODER SER ESTUDIANTE O PROFESOR DE UN CURSO:
+  @@id([userId, showId, role])
+}
+
+// model CalificationService {
+//   id        Int      @unique @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   comments  String
+//   score     Int // para presentarlo como un porcentaje result * 10^-1 = ...5%
+
+//   //relacion al show
+//   showId String
+//   show   Show   @relation(fields: [showId], references: [id])
+// }
+
+enum UserRole {
+  CONTRACTOR
+  ARTIST
+  ADMIN
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+// model User {
+//   id            String @id @default(uuid())
+//   email         String @unique
+//   firstName     String
+//   lastName      String
+//   createAt      DateTime @default(now())
+//   updateAt      DateTime
+//   show          User_Artist[]// relacion muchos a muchos 1!
+// }
+
+// model Artist {
+//   id            String @id @default(uuid())
+//   email         String @unique
+//   nickName      String @unique
+//   name          String
+//   lastName      String
+//   city          String
+//   country       String
+//   eventName     String
+//   description   String 
+//   imagesEvent   String[]
+//   duration      Int
+//   isActive      Boolean @default(false) 
+//   priceTime     Int
+//   priceDay      Int
+//   userReq       User_Artist[]
+//   categorys     CategoryArtist[]// relacion muchos a muchos 1!
+// }
+
+// model User_Artist {
+//   userId   String
+//   user     User @relation(fields: [userId], references: [id])
+//   artistId   String
+//   artist     Artist @relation(fields: [artistId], references: [id])
+//   @@id([userId, artistId])//codificando la clave de la relacion
+
+// }
+
+// model Category {
+//   id            Int @default(autoincrement()) @unique
+//   name          String 
+//   artists      CategoryArtist[]
+
+// }
+
+// model CategoryArtist {
+
+//   artistId     String 
+//   artist       Artist @relation(fields: [artistId], references: [id])
+//   categoryId    Int
+//   category      Category @relation(fields: [categoryId], references: [id])
+//   @@id([artistId, categoryId])//codificando la clave de la relacion
+
+// }
+
+// model Users {
+//   // id          String @id @default(uuid()) 
+//   userName    String @unique
+//   password    String
+//   city        String
+//   country     String
+//   rol         String
+// }
+
+// enum UserRole {
+//     contractor
+//     artist
+//     admin
+// }
 
 // model Service {
 //   id            String @id @default(uuid())
@@ -85,8 +183,6 @@ model CategoryArtist {
 //   categorys     CategoryService[]
 //   // services   Service[]// relacion muchos a muchos 1!
 // }
-
-
 
 // model UserService {
 //   userId        String
@@ -103,6 +199,3 @@ model CategoryArtist {
 //   service       Service @relation(fields: [serviceId], references: [id])
 //   @@id([artistId, serviceId])//codificando la clave de la relacion
 // }
-
-
-
