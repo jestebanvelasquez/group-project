@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
 
-import artistController from "../../controllers/show.controller";
+import showController from "../../controllers/show.controller";
 
 /* import { getArtists, getArtistsId, getArtistsName } from '../../controllers/artistsController' */
 
@@ -14,7 +14,8 @@ import artistController from "../../controllers/show.controller";
 }) */
 
 //http://localhost:4000/artist/
-router.get('/artists', artistController.getArtists)
+router.get('/shows', showController.getShows)
+router.post('/createShow/:id', showController.createShow)
 //http://localhost:4000/artist?name
 /* router.get('/', getArtistsName); */
 // http://localhost:4000/artist/:id

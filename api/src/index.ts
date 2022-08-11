@@ -20,10 +20,10 @@
 
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import server from './app';
-//const { createCategorys } = require('./controllers/categoryController');
+import { createCategories } from './utils/createCategories';
 
 const PORT = 4000;
 server.listen(PORT, () => {
-    /* createCategorys(); */
+    createCategories();
     console.log(`%s listening at ${PORT}`);
 })

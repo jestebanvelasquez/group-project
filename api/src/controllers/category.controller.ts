@@ -1,7 +1,7 @@
-/* import { PrismaClient } from '@prisma/client'; */
+import { PrismaClient } from '@prisma/client';
 import { Response, Request } from 'express';
 
-/* const prisma = new PrismaClient({ log: ['query', 'info'] });
+const prisma = new PrismaClient({ log: ['query', 'info'] });
 
 const categorys = [
     { "name": "poesía" },
@@ -17,26 +17,29 @@ const categorys = [
     { "name": "stand-up" },
     { "name": "mimo" },
     { "name": "diversion infantil" }
-] */
+]
 
 const categoryController = {
-    createCategories: async (_req: Request, res: Response) => {
-        res.status(200).send('Se crean las categorías');
-        /* const categorysDb = await prisma.category.findMany()
+    createCategories: async () => {
+        const categorysDb = await prisma.category.findMany()
         try {
             if (!categorysDb.length) {
-                categorys.map(async (el) => {
-                    await prisma.category.create({ data: el })
+                categorys.map(async (ele: { name: string; }) => {
+                    await prisma.category.create({
+                        data: {
+                            name: ele.name,
+                            asignedBy: 'ADMIN'
+                        }
+                    })
                 })
             }
         } catch (error) {
             return error
-        } */
+        }
     },
     getCategories: async (_req: Request, res: Response) => {
-        /* const categorys = await prisma.category.findMany()
-        return categorys.sort(); */
-        res.status(200).send('Se obtienen las categorías');
+        const categorys = await prisma.category.findMany()
+        res.status(200).json({ data: categorys.sort() });
     }
 }
 

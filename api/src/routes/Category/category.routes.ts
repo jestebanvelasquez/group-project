@@ -5,6 +5,6 @@ const router = Router()
 import categoryController from '../../controllers/category.controller';
 
 //Get All Categories
-router.get('/categories', categoryController.getCategories)
+router.get('/categories', categoryController.getCategories);
 
 export default router;

@@ -1,0 +1,13 @@
+
+import express from "express";// ESModules
+const router = express.Router()
+import{ getCategorys } from './Controllers/categoryController'
+
+router.get('/', async (_req, res) =>{
+    const allCategorys = await getCategorys()
+    res.status(201).json({data:allCategorys})
+})
+
+
+
+export default router;
