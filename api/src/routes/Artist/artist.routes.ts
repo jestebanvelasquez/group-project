@@ -1,49 +1,31 @@
-import express from "express";// ESModules
-import { PrismaClient } from '@prisma/client';
-import { Response,Request } from 'express';
+const { Router } = require('express');
+const router = Router();
 
-const router = express.Router()
-import{ getArtists, getArtistsId, getArtistsName } from './Controllers/artistsController'
-const prisma = new PrismaClient()
+import artistController from "../../controllers/artists.controller";
+
+/* import { getArtists, getArtistsId, getArtistsName } from '../../controllers/artistsController' */
 
 //Method Post:
-// http://localhost:4000/artist
-
-router.post('/', async(req:Request, res:Response) =>{
+/* router.post('/', async (req: Request, res: Response) => {
     const newUser = await prisma.artist.create({
         data: req.body,
-        
     })
-    
-    res.status(201).json({data:newUser})
-})
+    res.status(201).json({ data: newUser })
+}) */
 
-//Method Get:
-// http://localhost:4000/artist
-router.get('/', getArtists)
-
-
-
-//Method Get/name:
-// http://localhost:4000/artist
-router.get('/', getArtists)
-router.get('/name', getArtistsName)
-
-//Method Get/:id:
+//http://localhost:4000/artist/
+router.get('/artists', artistController.getArtists)
+//http://localhost:4000/artist?name
+/* router.get('/', getArtistsName); */
 // http://localhost:4000/artist/:id
-router.get('/:id', async (req:Request, res:Response) => {
+/* router.get('/:id', async (req: Request, res: Response) => {
     try {
         const artistId = await getArtistsId(req.params.id)
-
-        res.status(201).json({data:artistId})
+        res.status(201).json([artistId])
     } catch (error) {
-        
+
     }
-})
-
-
-
-
+}) */
 
 
 export default router;
