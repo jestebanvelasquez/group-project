@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 // import { PrismaClient } from '@prisma/client';
 const app = (0, express_1.default)();
 const index_1 = __importDefault(require("./Routes/index"));
+const categoryController_1 = require("./Routes/Controllers/categoryController");
 //midlewares:
 app.use(express_1.default.json()); //trasnforma boy a json
 // const prisma = new PrismaClient()
@@ -17,5 +18,6 @@ app.get('/ping', (_req, res) => {
 });
 app.use('/', index_1.default);
 app.listen(PORT, () => {
+    (0, categoryController_1.createCategorys)();
     console.log(`CONNECT TO: artistApp PORT:${PORT}`);
 });
