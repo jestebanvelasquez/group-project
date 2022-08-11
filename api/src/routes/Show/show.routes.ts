@@ -1,7 +1,7 @@
-const { Router } = require('express');
+import { Router } from 'express';
 const router = Router();
 
-import artistController from "../../controllers/artists.controller";
+import artistController from "../../controllers/show.controller";
 
 /* import { getArtists, getArtistsId, getArtistsName } from '../../controllers/artistsController' */
 
