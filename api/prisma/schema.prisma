@@ -18,6 +18,7 @@ model Users {
   country  String
   rol      UserRole
   shows    ShowArtist[]
+  
   // AppArtsist AppArtsist[]
   // rol         String
 }
