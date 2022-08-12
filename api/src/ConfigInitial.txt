@@ -1,9 +1,0 @@
-instalar:
--- npm i typescript ts-node ts-node-dev @types/node @types/express prisma prisma/client dotenv express nodemon   cors  @types/cors
-
-
-//para ejecutar: 
-npx tsc init = iniciar transpilador de ts
-npx prisma init = crear la carpeta prisma con un schema
-npx prisma migrate dev --name init : crear las migraciones a la base de datos 
-npx run dev = correr el servidor y el resultado del transpilador
