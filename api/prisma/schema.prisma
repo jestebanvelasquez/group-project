@@ -18,9 +18,6 @@ model Users {
   country  String
   rol      UserRole
   shows    ShowArtist[]
-  
-  // AppArtsist AppArtsist[]
-  // rol         String
 }
 
 model Show {
@@ -34,9 +31,7 @@ model Show {
   priceTime     Int
   priceDay      Int
   members       ShowArtist[]
-  // User_Show     UserRole[]
   categories    Category_Show[]
-  // members             Users[]
   // CalificationService CalificationService[] //calificaciones de los servicios!
 }
 model ShowArtist {
@@ -51,7 +46,6 @@ model Category {
   id        Int    @unique @default(autoincrement())
   name      String
   asignedBy String
-  //muchos shows contiene muchas categorias
   shows     Category_Show[]
 }
 
@@ -65,17 +59,21 @@ model Category_Show {
   @@id([showId, categoryId]) //codificando la clave de la relacion
 }
 
-model AppArtsist {
-  createdAt DateTime @default(now())
-  role      UserRole
-  //relacion explicita:
-  userId String
-  showId String
-  // user   Users  @relation(fields: [userId], references: [id])
-  // show   Show   @relation(fields: [showId], references: [id])
-  //PARA PODER SER ESTUDIANTE O PROFESOR DE UN CURSO:
-  @@id([userId, showId, role])
+enum UserRole {
+  CONTRACTOR
+  ARTIST
+  ADMIN
 }
+
+
+///////////////////////// Pruebas /////////////////////////////////////
+// model AppArtsist {
+//   createdAt DateTime @default(now())
+//   role      UserRole
+//   userId String
+//   showId String
+//   @@id([userId, showId, role])
+// }
 
 // model CalificationService {
 //   id        Int      @unique @default(autoincrement())
@@ -86,112 +84,4 @@ model AppArtsist {
 //   //relacion al show
 //   showId String
 //   show   Show   @relation(fields: [showId], references: [id])
-// }
-
-enum UserRole {
-  CONTRACTOR
-  ARTIST
-  ADMIN
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-// model User {
-//   id            String @id @default(uuid())
-//   email         String @unique
-//   firstName     String
-//   lastName      String
-//   createAt      DateTime @default(now())
-//   updateAt      DateTime
-//   show          User_Artist[]// relacion muchos a muchos 1!
-// }
-
-// model Artist {
-//   id            String @id @default(uuid())
-//   email         String @unique
-//   nickName      String @unique
-//   name          String
-//   lastName      String
-//   city          String
-//   country       String
-//   eventName     String
-//   description   String 
-//   imagesEvent   String[]
-//   duration      Int
-//   isActive      Boolean @default(false) 
-//   priceTime     Int
-//   priceDay      Int
-//   userReq       User_Artist[]
-//   categorys     CategoryArtist[]// relacion muchos a muchos 1!
-// }
-
-// model User_Artist {
-//   userId   String
-//   user     User @relation(fields: [userId], references: [id])
-//   artistId   String
-//   artist     Artist @relation(fields: [artistId], references: [id])
-//   @@id([userId, artistId])//codificando la clave de la relacion
-
-// }
-
-// model Category {
-//   id            Int @default(autoincrement()) @unique
-//   name          String 
-//   artists      CategoryArtist[]
-
-// }
-
-// model CategoryArtist {
-
-//   artistId     String 
-//   artist       Artist @relation(fields: [artistId], references: [id])
-//   categoryId    Int
-//   category      Category @relation(fields: [categoryId], references: [id])
-//   @@id([artistId, categoryId])//codificando la clave de la relacion
-
-// }
-
-// model Users {
-//   // id          String @id @default(uuid()) 
-//   userName    String @unique
-//   password    String
-//   city        String
-//   country     String
-//   rol         String
-// }
-
-// enum UserRole {
-//     contractor
-//     artist
-//     admin
-// }
-
-// model Service {
-//   id            String @id @default(uuid())
-//   description   String 
-//   price         Int
-//   duration      Int
-//   isActive      Boolean @default(false) 
-//   createAt      DateTime @default(now())
-//   updateAt      DateTime
-//   users         UserService[]
-//   artists       ArtistService[]
-//   categorys     CategoryService[]
-//   // services   Service[]// relacion muchos a muchos 1!
-// }
-
-// model UserService {
-//   userId        String
-//   user          User @relation(fields: [userId], references: [id])
-//   serviceId     String
-//   service       Service @relation(fields: [serviceId], references: [id])
-//   @@id([userId, serviceId])//codificando la clave de la relacion
-// }
-
-// model ArtistService {
-//   artistId      String
-//   artist        Artist @relation(fields: [artistId], references: [id])
-//   serviceId     String
-//   service       Service @relation(fields: [serviceId], references: [id])
-//   @@id([artistId, serviceId])//codificando la clave de la relacion
 // }
