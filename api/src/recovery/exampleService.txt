@@ -1,0 +1,116 @@
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient({ log: ['query', 'info'] });
+import { Response, Request, NextFunction } from 'express';
+
+// import { Shows, Category } from '../../types';
+interface users {
+    email: string
+    password: string
+    city: string
+    country: string
+    rol: string
+}
+
+// const shows : Shows[] = prisma.show as Shows[]
+export const getUsers = async (_req: Request, res: Response) => {
+    const allUsers = await prisma.users.findMany()
+    res.status(201).json({ data: allUsers })
+
+}
+
+export const registerUser = async (req: Request, res: Response) => {
+
+    const { email, password, city, country, rol } = req.body
+
+    const newUser:users = await prisma.users.create({
+        data: {
+            email,
+            password,
+            city,
+            country,
+            rol: rol
+        }
+    })
+
+    res.status(200).json({ data: newUser })
+    // return newUser
+}
+
+
+export const createShow = async (req: Request, res: Response, _next: NextFunction) => {
+    const user = await prisma.users.findUnique({
+        where: {
+            id: req.params.id
+        }
+    })//validar que sea artist o admin
+    try {
+
+        if (user?.rol === 'ADMIN' || user?.rol === 'ARTIST') {
+            const newShow = await prisma.show.create({
+                data: {
+                    nickName: req.body.nickName,
+                    eventName: req.body.eventName,
+                    description: req.body.description,
+                    duration: req.body.duration,
+                    imagesEvent: req.body.imagesEvent,
+                    priceTime: req.body.priceTime,
+                    priceDay: req.body.priceDay,
+                    categories: {
+
+                        create:{
+                            category:{
+                                connect:{
+                                    id: req.body.categories
+                                }
+                            }
+                        }
+                    },
+                    members: {
+                        create:{
+                            userId:req.params.id
+                        }
+                    }
+                },
+            })
+            res.status(201).json({ data: newShow })
+        } else {
+            res.status(400).send('no tienes permisos para ingresar a esta herramienta')
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+
+
+}
+
+
+export const getShows = async (_req:Request, res:Response) => {
+    const shows = await prisma.show.findMany({
+        include:{
+            categories:{
+                select:{
+                    category:true
+                }
+            },
+            members:{
+                select:{
+                    user:true
+                }
+            }
+        }
+    })
+    res.status(202).json({data:shows})
+
+}
+
+
+// categories: {
+//     create:{
+//         category:{
+//             connect:{
+//                 id: req.body.categories
+//             }
+//         }
+//     }
+// }
