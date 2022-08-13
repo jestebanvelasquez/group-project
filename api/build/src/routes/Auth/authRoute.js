@@ -10,7 +10,7 @@ const Authorization_1 = require("../../../Middlewares/Authorization");
 //http://localhost:4000/...
 router.post('/signup', auth_controller_1.signUp);
 router.post('/signin', auth_controller_1.signIn);
-router.get('/profile', [Authorization_1.Authorization], auth_controller_1.profile);
 router.get('/soloadmin', [Authorization_1.Admin], auth_controller_1.soloAdmin);
 router.get('/soloartist', [Authorization_1.Artist], auth_controller_1.soloArtist);
+router.get('/solocontractor', [Authorization_1.Contractor], auth_controller_1.soloContractror);
 exports.default = router;
