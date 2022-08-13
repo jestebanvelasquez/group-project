@@ -4,11 +4,33 @@ import { Response, Request, NextFunction } from 'express';
 const prisma = new PrismaClient({ log: ['query', 'info'] });
 
 const showController = {
-    getShows: async (req: Request, res: Response): Promise<any> => {
+    getShowsByArtist: async (req: Request, res: Response): Promise<any> => {
         const { name } = req.query;
         if (name) {
             const showByName: string[] = await prisma.$queryRaw`SELECT "public"."Show"."id", "public"."Show"."nickName", "public"."Show"."eventName", "public"."Show"."description", "public"."Show"."imagesEvent", "public"."Show"."duration", "public"."Show"."isActive", "public"."Show"."priceTime", "public"."Show"."priceDay" FROM "public"."Show" WHERE "public"."Show"."nickName" LIKE ${`%${name}%`}`;
-            console.log(showByName);
+            return res.send(showByName)
+        } else {
+            const shows = await prisma.show.findMany({
+                include: {
+                    categories: {
+                        select: {
+                            category: true
+                        }
+                    },
+                    members: {
+                        select: {
+                            user: true
+                        }
+                    }
+                }
+            })
+            return res.status(200).json({ data: shows })
+        }
+    },
+    getShowsbyName: async (req: Request, res: Response): Promise<any> => {
+        const { name } = req.query;
+        if (name) {
+            const showByName: string[] = await prisma.$queryRaw`SELECT "public"."Show"."id", "public"."Show"."nickName", "public"."Show"."eventName", "public"."Show"."description", "public"."Show"."imagesEvent", "public"."Show"."duration", "public"."Show"."isActive", "public"."Show"."priceTime", "public"."Show"."priceDay" FROM "public"."Show" WHERE "public"."Show"."eventName" LIKE ${`%${name}%`}`;
             return res.send(showByName)
         } else {
             const shows = await prisma.show.findMany({

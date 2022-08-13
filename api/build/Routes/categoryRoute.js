@@ -13,14 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express")); // ESModules
-// import { PrismaClient } from '@prisma/client';
 const router = express_1.default.Router();
-const artistsController_1 = require("./Controllers/artistsController");
-// const prisma = new PrismaClient()
-router.get('/', artistsController_1.getArtists);
-// router.post('/', )
-router.post('/hola', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newUser = yield (0, artistsController_1.createArtist)(req.body);
-    res.status(201).json({ data: newUser });
+const categoryController_1 = require("./Controllers/categoryController");
+router.get('/', (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const allCategorys = yield (0, categoryController_1.getCategorys)();
+    res.status(201).json({ data: allCategorys });
 }));
 exports.default = router;
