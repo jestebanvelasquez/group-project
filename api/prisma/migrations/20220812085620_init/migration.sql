@@ -52,16 +52,6 @@ CREATE TABLE "Category_Show" (
     CONSTRAINT "Category_Show_pkey" PRIMARY KEY ("showId","categoryId")
 );
 
--- CreateTable
-CREATE TABLE "AppArtsist" (
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "role" "UserRole" NOT NULL,
-    "userId" TEXT NOT NULL,
-    "showId" TEXT NOT NULL,
-
-    CONSTRAINT "AppArtsist_pkey" PRIMARY KEY ("userId","showId","role")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
 
