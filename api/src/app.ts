@@ -1,10 +1,10 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import routes from './routes/index.routes';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const server = express();
+const server:Application = express();
 
 server.use(express.json())//transforma body a json
 
