@@ -4,22 +4,42 @@ import { Response, Request, NextFunction } from 'express';
 const prisma = new PrismaClient({ log: ['query', 'info'] });
 
 const showController = {
-    getShows: async (_req: Request, res: Response) => {
-        const shows = await prisma.show.findMany({
-            include: {
-                categories: {
-                    select: {
-                        category: true
-                    }
-                },
-                members: {
-                    select: {
-                        user: true
+    getShows: async (req: Request, res: Response): Promise<any> => {
+        const { name } = req.query;
+        if (name) {
+            const showByName: string[] = await prisma.$queryRaw`SELECT "public"."Show"."id", "public"."Show"."nickName", "public"."Show"."eventName", "public"."Show"."description", "public"."Show"."imagesEvent", "public"."Show"."duration", "public"."Show"."isActive", "public"."Show"."priceTime", "public"."Show"."priceDay" FROM "public"."Show" WHERE "public"."Show"."nickName" LIKE ${`%${name}%`}`;
+            console.log(showByName);
+            return res.send(showByName)
+        } else {
+            const shows = await prisma.show.findMany({
+                include: {
+                    categories: {
+                        select: {
+                            category: true
+                        }
+                    },
+                    members: {
+                        select: {
+                            user: true
+                        }
                     }
                 }
-            }
-        })
-        res.status(202).json({ data: shows })
+            })
+            return res.status(200).json({ data: shows })
+        }
+    },
+    getShowsById: async (req: Request, res: Response) => {
+        const { id } = req.body;
+        try {
+            const show = await prisma.show.findFirst({
+                where: {
+                    id
+                }
+            });
+            res.status(200).json([show]);
+        } catch (error) {
+            res.status(400).send(error)
+        }
     },
     createShow: async (req: Request, res: Response, _next: NextFunction) => {
         const user = await prisma.users.findUnique({
@@ -28,7 +48,6 @@ const showController = {
             }
         })//validar que sea artist o admin
         try {
-
             if (user?.rol === 'ADMIN' || user?.rol === 'ARTIST') {
                 const newShow = await prisma.show.create({
                     data: {
@@ -66,74 +85,4 @@ const showController = {
     }
 }
 
-/* 
-export const createArtist = async (req: Request) => {
-    // res.status(201).json('hola desde controllers')
-    try {
-        const newArtist = await prisma.artist.create({ data: req.body })
-        return newArtist
-        // res.status(201).json({data: newArtist})
-    } catch (error) {
-        return error
-    }
-} */
-
-/* export const getArtistsId = async (id: string) => {
-    try {
-        const artistId = await prisma.artist.findFirst({
-            where: {
-                id
-            }
-        });
-        return artistId
-    } catch (error) {
-        return error
-    }
-} */
-
-
-/* export const getArtistsName = async (req: Request, res: Response) => {
-    console.log(req.query);
-    try {
-        if (req.query.name) {
-            const artistName = await prisma.artist.findMany({
-                where: {
-                    name: `${req.query.name}`
-                }
-            });
-            console.log(artistName);
-            res.status(200).json({ data: artistName });
-        }
-
-        // if (nickName) {
-        // if(!artistName ){
-        //     res.status(404).json({data:'no hay artistas con ese nombre'})
-
-        // }
-
-        // return artistName
-        // }
-    } catch (error) {
-        return error
-    }
-} */
-// export const getArtistsName = async (req: Request, res: Response) => {
-//     console.log(req.query.name)
-
-//     try {
-//         // if (nickName) {
-//         const artistName = await prisma.artist.findMany({
-//             where: {
-//                 name: {
-//                     contains: `${req.query.name}`,
-//                 },
-//             },
-//         })
-//         // return artistName
-//         res.status(201).json({ data: artistName })
-//         // }
-//     } catch (error) {
-//         return error
-//     }
-// }
 export default showController;
