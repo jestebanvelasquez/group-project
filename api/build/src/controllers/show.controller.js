@@ -12,22 +12,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient({ log: ['query', 'info'] });
 const showController = {
-    getShows: (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const shows = yield prisma.show.findMany({
-            include: {
-                categories: {
-                    select: {
-                        category: true
-                    }
-                },
-                members: {
-                    select: {
-                        user: true
+    getShows: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { name } = req.query;
+        if (name) {
+            const showByName = yield prisma.$queryRaw `SELECT "public"."Show"."id", "public"."Show"."nickName", "public"."Show"."eventName", "public"."Show"."description", "public"."Show"."imagesEvent", "public"."Show"."duration", "public"."Show"."isActive", "public"."Show"."priceTime", "public"."Show"."priceDay" FROM "public"."Show" WHERE "public"."Show"."nickName" LIKE ${`%${name}%`}`;
+            console.log(showByName);
+            return res.send(showByName);
+        }
+        else {
+            const shows = yield prisma.show.findMany({
+                include: {
+                    categories: {
+                        select: {
+                            category: true
+                        }
+                    },
+                    members: {
+                        select: {
+                            user: true
+                        }
                     }
                 }
-            }
-        });
-        res.status(202).json({ data: shows });
+            });
+            return res.status(200).json({ data: shows });
+        }
+    }),
+    getShowsById: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { id } = req.body;
+        try {
+            const show = yield prisma.show.findFirst({
+                where: {
+                    id
+                }
+            });
+            res.status(200).json([show]);
+        }
+        catch (error) {
+            res.status(400).send(error);
+        }
     }),
     createShow: (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
         const user = yield prisma.users.findUnique({
@@ -73,70 +95,4 @@ const showController = {
         }
     })
 };
-/*
-export const createArtist = async (req: Request) => {
-    // res.status(201).json('hola desde controllers')
-    try {
-        const newArtist = await prisma.artist.create({ data: req.body })
-        return newArtist
-        // res.status(201).json({data: newArtist})
-    } catch (error) {
-        return error
-    }
-} */
-/* export const getArtistsId = async (id: string) => {
-    try {
-        const artistId = await prisma.artist.findFirst({
-            where: {
-                id
-            }
-        });
-        return artistId
-    } catch (error) {
-        return error
-    }
-} */
-/* export const getArtistsName = async (req: Request, res: Response) => {
-    console.log(req.query);
-    try {
-        if (req.query.name) {
-            const artistName = await prisma.artist.findMany({
-                where: {
-                    name: `${req.query.name}`
-                }
-            });
-            console.log(artistName);
-            res.status(200).json({ data: artistName });
-        }
-
-        // if (nickName) {
-        // if(!artistName ){
-        //     res.status(404).json({data:'no hay artistas con ese nombre'})
-
-        // }
-
-        // return artistName
-        // }
-    } catch (error) {
-        return error
-    }
-} */
-// export const getArtistsName = async (req: Request, res: Response) => {
-//     console.log(req.query.name)
-//     try {
-//         // if (nickName) {
-//         const artistName = await prisma.artist.findMany({
-//             where: {
-//                 name: {
-//                     contains: `${req.query.name}`,
-//                 },
-//             },
-//         })
-//         // return artistName
-//         res.status(201).json({ data: artistName })
-//         // }
-//     } catch (error) {
-//         return error
-//     }
-// }
 exports.default = showController;

@@ -26,6 +26,8 @@ export const signUp = async (req: Request, res: Response) => {
         //guardando el user
         const newUser = await prisma.users.create({
             data: {
+                userName: req.body.userName,
+                lastName: req.body.lastName,
                 email: req.body.email,
                 password: hashedPassword,//password cifrada
                 city: req.body.city,
@@ -33,20 +35,25 @@ export const signUp = async (req: Request, res: Response) => {
                 rol: req.body.rol,
             }
         })
+        const fullName = `${newUser.userName}  ${newUser.lastName}`
         //creando  el token para el ADMIN:
         if(newUser.rol === 'ADMIN'){
             const adminToken:string = Jwt.sign({user_id: newUser.id}, process.env.TOKEN_SECRET_ADMIN!)
-            return res.header('auth-token', adminToken).json({ succes: true, data: newUser.email })
+            return res.status(200).json({ succes: true, data:fullName, token: adminToken})
+            // return res.header('auth-token', adminToken).json({ succes: true, data: newUser.email })
         }
         console.log(newUser.id);
         //creando  el token para el ARTIST:
         if(newUser.rol === 'ARTIST'){
             const artistToken:string = Jwt.sign({user_id: newUser.id}, process.env.TOKEN_SECRET_ARTIST!)
-            return res.header('auth-token', artistToken).json({ succes: true, data: newUser.email })
+            return res.status(200).json({ succes: true, data: fullName, token: artistToken})
+            // return res.header('auth-token', artistToken).json({ succes: true, data: newUser.email })
+
         }
         //creando  el token para el USER:
         if(newUser.rol === 'CONTRACTOR'){const accessToken: string = Jwt.sign({ user_id: newUser.id }, process.env.TOKEN_SECRET_CONTRACTOR!)
-        return res.header('auth-token', accessToken).json({ succes: true, data: newUser.email })
+        return res.status(200).json({ succes: true, data: fullName, token: accessToken})
+        // return res.header('auth-token', accessToken).json({ succes: true, data: newUser.email })
     }
     } catch (error) {
         return error
@@ -76,16 +83,23 @@ export const signIn = async (req: Request, res: Response) => {
          //creando  el token para el ADMIN:
         if(user.rol === 'ADMIN'){
             const adminToken:string = Jwt.sign({user_id: user.id}, process.env.TOKEN_SECRET_ADMIN!)
-            return res.header('auth-token', adminToken).json({ succes: true, data: user.email})
+            return res.status(200).json({ succes: true, data: user.email, token: adminToken, rol: user.rol})
+
+            // return res.header('auth-token', adminToken).json({ succes: true, data: user.email, rol: user.rol})
         }
         //creando  el token para el ARTIST:
         if(user.rol === 'ARTIST'){
             const artistToken:string = Jwt.sign({user_id: user.id}, process.env.TOKEN_SECRET_ARTIST!)
-            return res.header('auth-token', artistToken).json({ succes: true, data: user.email })
+            return res.status(200).json({ succes: true, data: user.email, token: artistToken, rol: user.rol})
+            //'auth-token', artistToken
+            // return res.writeHead(201, {header: artistToken}).json({ succes: true, data: user.email, rol: user.rol })
         }
         //creando  el token para el CONTRACTOR:
-        const token = Jwt.sign({ user_id: user?.id }, process.env.TOKEN_SECRET_CONTRACTOR!)
-        return res.status(200).header('auth-token', token).json({ succes: true, data: user.email })
+        if(user.rol === 'CONTRACTOR'){
+            const token = Jwt.sign({ user_id: user?.id }, process.env.TOKEN_SECRET_CONTRACTOR!)
+            return res.status(200).json({ succes: true, data: user.email, token: token, rol: user.rol})
+            // return res.status(200).header('auth-token', token).json({ succes: true, data: user.email, rol: user.rol })
+        }
     } catch (error) {
         return res.status(404).json({ succes: false, error: 'Error Server' })
     }
