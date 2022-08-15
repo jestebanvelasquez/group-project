@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 
 import showController from "../../controllers/show.controller";
-
+// import { Artist} from '../../../Middlewares/Authorization'
 
 //http://localhost:4000/...
 router.get('/shows', showController.getShowsByArtist);

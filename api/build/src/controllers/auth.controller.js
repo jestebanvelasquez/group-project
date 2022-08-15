@@ -33,6 +33,8 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //guardando el user
         const newUser = yield prisma.users.create({
             data: {
+                userName: req.body.userName,
+                lastName: req.body.lastName,
                 email: req.body.email,
                 password: hashedPassword,
                 city: req.body.city,
@@ -40,21 +42,25 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 rol: req.body.rol,
             }
         });
+        const fullName = `${newUser.userName}  ${newUser.lastName}`;
         //creando  el token para el ADMIN:
         if (newUser.rol === 'ADMIN') {
             const adminToken = jsonwebtoken_1.default.sign({ user_id: newUser.id }, process.env.TOKEN_SECRET_ADMIN);
-            return res.header('auth-token', adminToken).json({ succes: true, data: newUser.email });
+            return res.status(200).json({ succes: true, data: fullName, token: adminToken });
+            // return res.header('auth-token', adminToken).json({ succes: true, data: newUser.email })
         }
         console.log(newUser.id);
         //creando  el token para el ARTIST:
         if (newUser.rol === 'ARTIST') {
             const artistToken = jsonwebtoken_1.default.sign({ user_id: newUser.id }, process.env.TOKEN_SECRET_ARTIST);
-            return res.header('auth-token', artistToken).json({ succes: true, data: newUser.email });
+            return res.status(200).json({ succes: true, data: fullName, token: artistToken });
+            // return res.header('auth-token', artistToken).json({ succes: true, data: newUser.email })
         }
         //creando  el token para el USER:
         if (newUser.rol === 'CONTRACTOR') {
             const accessToken = jsonwebtoken_1.default.sign({ user_id: newUser.id }, process.env.TOKEN_SECRET_CONTRACTOR);
-            return res.header('auth-token', accessToken).json({ succes: true, data: newUser.email });
+            return res.status(200).json({ succes: true, data: fullName, token: accessToken });
+            // return res.header('auth-token', accessToken).json({ succes: true, data: newUser.email })
         }
     }
     catch (error) {
@@ -83,16 +89,22 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //creando  el token para el ADMIN:
         if (user.rol === 'ADMIN') {
             const adminToken = jsonwebtoken_1.default.sign({ user_id: user.id }, process.env.TOKEN_SECRET_ADMIN);
-            return res.header('auth-token', adminToken).json({ succes: true, data: user.email });
+            return res.status(200).json({ succes: true, data: user.email, token: adminToken, rol: user.rol });
+            // return res.header('auth-token', adminToken).json({ succes: true, data: user.email, rol: user.rol})
         }
         //creando  el token para el ARTIST:
         if (user.rol === 'ARTIST') {
             const artistToken = jsonwebtoken_1.default.sign({ user_id: user.id }, process.env.TOKEN_SECRET_ARTIST);
-            return res.header('auth-token', artistToken).json({ succes: true, data: user.email });
+            return res.status(200).json({ succes: true, data: user.email, token: artistToken, rol: user.rol });
+            //'auth-token', artistToken
+            // return res.writeHead(201, {header: artistToken}).json({ succes: true, data: user.email, rol: user.rol })
         }
         //creando  el token para el CONTRACTOR:
-        const token = jsonwebtoken_1.default.sign({ user_id: user === null || user === void 0 ? void 0 : user.id }, process.env.TOKEN_SECRET_CONTRACTOR);
-        return res.status(200).header('auth-token', token).json({ succes: true, data: user.email });
+        if (user.rol === 'CONTRACTOR') {
+            const token = jsonwebtoken_1.default.sign({ user_id: user === null || user === void 0 ? void 0 : user.id }, process.env.TOKEN_SECRET_CONTRACTOR);
+            return res.status(200).json({ succes: true, data: user.email, token: token, rol: user.rol });
+            // return res.status(200).header('auth-token', token).json({ succes: true, data: user.email, rol: user.rol })
+        }
     }
     catch (error) {
         return res.status(404).json({ succes: false, error: 'Error Server' });
@@ -100,17 +112,21 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.signIn = signIn;
 const soloAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(req.user_id);
     try {
-        // if (!req.user_id) return 'no hay id'
-        const admin = yield prisma.users.findFirst({
+        const admin = yield prisma.users.findUnique({
             where: {
                 id: req.user_id
             }
         });
-        res.status(201).json({ data: 'hola desde solo admin', admin });
+        // res.status(201).json({ data: 'hola desde solo admin' , admin})
+        if (admin.rol === 'ADMIN')
+            return res.send(true);
+        else {
+            return res.send(false);
+        }
     }
     catch (error) {
+        return error;
     }
 });
 exports.soloAdmin = soloAdmin;

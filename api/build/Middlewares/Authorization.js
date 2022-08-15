@@ -24,8 +24,8 @@ const Admin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         const token = headerToken === null || headerToken === void 0 ? void 0 : headerToken.replace("Bearer ", "");
         try {
             const decoded = jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET_ADMIN); // ! asegurar que va a llegar
-            console.log(decoded.id); // = {id: 8278372837bjhjdhsjd, iit}
-            req.user_id = decoded.id;
+            console.log(decoded.user_id); // = {id: 8278372837bjhjdhsjd, iit}
+            req.user_id = decoded.user_id;
             console.log(req.user_id);
             next();
         }

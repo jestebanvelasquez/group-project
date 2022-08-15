@@ -16,4 +16,5 @@ router.get('/solocontractor' , [Contractor],  soloContractror )
 
 
 
+
 export default router;

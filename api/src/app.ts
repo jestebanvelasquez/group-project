@@ -19,6 +19,7 @@ const allowedOrigins = ['*'];
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins
+  
 };
 
 // Then pass these options to cors:
