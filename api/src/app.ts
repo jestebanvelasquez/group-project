@@ -4,6 +4,10 @@ import routes from './routes/index.routes';
 import dotenv from 'dotenv';
 dotenv.config();
 
+export const SERVER_TOKEN_EXPIRETIME = process.env.SERVER_TOKEN_EXPIRETIME || 3600;
+export const SERVER_TOKEN_ISSUER = process.env.SERVER_TOKEN_ISSUER || "coolIssuer";
+export const SERVER_TOKEN_SECRET = process.env.SERVER_TOKEN_SECRET || "superencryptedsecret";
+
 const server = express();
 
 server.use(express.json())//transforma body a json

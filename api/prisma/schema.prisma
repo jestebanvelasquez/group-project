@@ -25,6 +25,7 @@ model Usuario {
   email          String           @unique @db.VarChar(255)
   password       String           @db.VarChar(255)
   persona        Persona          @relation(fields: [idPersona], references: [id])
+  token          String?
   idPersona      String           @unique
   artista        Artista?
   eventosUsuario UsuarioEventos[]

@@ -20,10 +20,8 @@
 
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import server from './app';
-//import { createCategories } from './utils/createCategories';
 
 const PORT = 4000;
 server.listen(PORT, () => {
-    //createCategories();
     console.log(`%s listening at ${PORT}`);
 })

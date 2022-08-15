@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { Response, Request } from 'express';
+import { Response, Request, NextFunction } from 'express';
 
 const prisma = new PrismaClient({ log: ['query', 'info'] });
 
 const artistController = {
-    getArtist: async (req: Request, res: Response): Promise<any> => {
+    getArtist: async (req: Request, res: Response, _next: NextFunction): Promise<any> => {
         const { name } = req.query;
         try {
             if (name) {
@@ -23,10 +23,7 @@ const artistController = {
                     }
                 });
                 if (artistByName.length > 0) {
-                    return res.status(200).json({
-                        status: 'success',
-                        data: artistByName
-                    });
+                    return res.status(200).json(artistByName);
                 } else {
                     throw `No se encontraron artistas con el nombre de »${name}«.`;
                 }
@@ -48,15 +45,13 @@ const artistController = {
             }
         } catch (error) {
             return res.status(400).json({
-                status: 'error',
-                data: error
+                message: error
             });
         }
     },
-    getArtistById: async (req: Request, res: Response): Promise<any> => {
+    getArtistById: async (req: Request, res: Response, _next: NextFunction): Promise<any> => {
         const { id } = req.params;
         try {
-            console.log(id);
             const artist = await prisma.artista.findFirst({
                 where: {
                     id
@@ -70,62 +65,56 @@ const artistController = {
                 }
             });
             if (artist) {
-                return res.status(200).json({
-                    status: 'success',
-                    data: artist
-                });
+                return res.status(200).json(artist);
             } else {
                 throw `No se encontró el artista por el id »${id}«.`;
             }
         } catch (error) {
             return res.status(400).json({
-                status: 'error',
-                data: error
-            })
+                message: error
+            });
         }
     },
-    // createArtist: async (req: Request, res: Response, _next: NextFunction) => {
-    //     const user = await prisma.users.findUnique({
-    //         where: {
-    //             id: req.params.id
-    //         }
-    //     })//validar que sea artist o admin
-    //     try {
-    //         if (user?.rol === 'ADMIN' || user?.rol === 'ARTIST') {
-    //             const newShow = await prisma.show.create({
-    //                 data: {
-    //                     nickName: req.body.nickName,
-    //                     eventName: req.body.eventName,
-    //                     description: req.body.description,
-    //                     duration: req.body.duration,
-    //                     imagesEvent: req.body.imagesEvent,
-    //                     priceTime: req.body.priceTime,
-    //                     priceDay: req.body.priceDay,
-    //                     categories: {
+    createArtist: async (req: Request, res: Response, _next: NextFunction): Promise<any> => {
+        const { name, img, id } = req.body;
+        try {
+            const isUsuario = await prisma.usuario.findUnique({
+                where: { id }
+            });
 
-    //                         create: {
-    //                             category: {
-    //                                 connect: {
-    //                                     id: req.body.categories
-    //                                 }
-    //                             }
-    //                         }
-    //                     },
-    //                     members: {
-    //                         create: {
-    //                             userId: req.params.id
-    //                         }
-    //                     }
-    //                 },
-    //             })
-    //             res.status(201).json({ data: newShow })
-    //         } else {
-    //             res.status(400).send('no tienes permisos para ingresar a esta herramienta')
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+            if (!isUsuario) {
+                throw 'Ocurrió un problema al crear el artista, se necesita ser usuario para poder ser artista.';
+            }
+
+            const isArtist: any = await prisma.artista.findMany({
+                where: {
+                    OR: [{ name }, { AND: { idUsuario: id } }]
+                }
+            });
+
+            if (isArtist.length > 0) {
+                throw `Ya hay un artista con el nombre ${name} o el id ${id}, verifica nuevamente por favor.`;
+            }
+
+            const createArtist = await prisma.artista.create({
+                data: {
+                    name: `${name}`,
+                    img: `${img}`,
+                    idUsuario: `${id}`
+                }
+            });
+
+            if (!createArtist) {
+                throw 'Ocurrió un error al crear el artista, intenta nuevamente.';
+            }
+
+            return res.status(201).json(createArtist);
+        } catch (error) {
+            return res.status(400).json({
+                message: error
+            });
+        }
+    }
 }
 
 export default artistController;
