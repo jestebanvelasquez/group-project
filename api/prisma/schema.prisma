@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -10,78 +11,106 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
+model Persona {
   id       String   @id @default(uuid())
-  email    String   @unique
-  password String
-  city     String
-  country  String
-  rol      UserRole
-  shows    ShowArtist[]
+  name     String   @db.VarChar(255)
+  lastname String   @db.VarChar(255)
+  city     String   @db.VarChar(255)
+  country  String   @db.VarChar(255)
+  usuario  Usuario?
 }
 
-model Show {
-  id            String          @id @default(uuid())
-  nickName      String          @unique
-  eventName     String
-  description   String
-  imagesEvent   String[]
-  duration      Int
-  isActive      Boolean         @default(false)
-  priceTime     Int
-  priceDay      Int
-  members       ShowArtist[]
-  categories    Category_Show[]
-  // CalificationService CalificationService[] //calificaciones de los servicios!
-}
-model ShowArtist {
-  showId    String
-  show      Show @relation(fields: [showId], references: [id])
-  userId    String
-  user      Users @relation(fields: [userId], references: [id])
-  @@id([showId, userId])
+model Usuario {
+  id             String           @id @default(uuid())
+  email          String           @unique @db.VarChar(255)
+  password       String           @db.VarChar(255)
+  persona        Persona          @relation(fields: [idPersona], references: [id])
+  token          String?
+  idPersona      String           @unique
+  artista        Artista?
+  eventosUsuario UsuarioEventos[]
+  roles          RolesUsuarios[]
+  eventosCompras EventosCompras[]
 }
 
-model Category {
-  id        Int    @unique @default(autoincrement())
-  name      String
-  asignedBy String
-  shows     Category_Show[]
+model Artista {
+  id        String    @id @default(uuid())
+  name      String    @unique @db.VarChar(255)
+  img       String    @db.VarChar(255)
+  usuario   Usuario   @relation(fields: [idUsuario], references: [id])
+  idUsuario String    @unique
+  eventos   Eventos[]
 }
 
-//relacion entre usuario-Artista y show:
-model Category_Show {
-  showId     String
-  show       Show     @relation(fields: [showId], references: [id])
-  categoryId Int
-  category   Category @relation(fields: [categoryId], references: [id])
-  assignedAt DateTime @default(now())
-  @@id([showId, categoryId]) //codificando la clave de la relacion
+model Eventos {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(255)
+  description String   @db.VarChar(255)
+  lugar       String   @db.VarBit(255)
+  imagesEvent String[]
+  duration    Float    @db.Real
+  isActive    Boolean  @default(false)
+  priceTime   Float    @db.Real
+  priceDay    Float    @db.Real
+
+  artista        Artista             @relation(fields: [artistaId], references: [id])
+  artistaId      String
+  categorias     EventosCategorias[]
+  UsuarioEventos UsuarioEventos[]
+  compras        EventosCompras[]
 }
 
-enum UserRole {
-  CONTRACTOR
-  ARTIST
-  ADMIN
+model UsuarioEventos {
+  usuario  Usuario @relation(fields: [userId], references: [id])
+  userId   String
+  eventos  Eventos @relation(fields: [idEvento], references: [id])
+  idEvento String
+
+  @@id([userId, idEvento])
 }
 
+model EventosCategorias {
+  eventos     Eventos    @relation(fields: [idEvento], references: [id])
+  idEvento    String
+  categorias  Categorias @relation(fields: [idCategoria], references: [id])
+  idCategoria String
 
-///////////////////////// Pruebas /////////////////////////////////////
-// model AppArtsist {
-//   createdAt DateTime @default(now())
-//   role      UserRole
-//   userId String
-//   showId String
-//   @@id([userId, showId, role])
-// }
+  @@id([idEvento, idCategoria])
+}
 
-// model CalificationService {
-//   id        Int      @unique @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   comments  String
-//   score     Int // para presentarlo como un porcentaje result * 10^-1 = ...5%
+model Categorias {
+  id      String              @id @default(uuid())
+  name    String              @db.VarChar(255)
+  eventos EventosCategorias[]
+}
 
-//   //relacion al show
-//   showId String
-//   show   Show   @relation(fields: [showId], references: [id])
-// }
+model Compras {
+  id      String           @id @default(uuid())
+  code    String           @db.VarChar(255)
+  eventos EventosCompras[]
+}
+
+model EventosCompras {
+  id        String  @id @default(uuid())
+  eventos   Eventos @relation(fields: [idEvento], references: [id])
+  idEvento  String
+  compras   Compras @relation(fields: [idCompra], references: [id])
+  idCompra  String
+  usuarios  Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario String
+}
+
+model Roles {
+  id       String          @id @default(uuid())
+  nombre   String          @db.VarChar(255)
+  usuarios RolesUsuarios[]
+}
+
+model RolesUsuarios {
+  roles     Roles   @relation(fields: [idRol], references: [id])
+  idRol     String
+  usuarios  Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario String
+
+  @@id([idRol, idUsuario])
+}
