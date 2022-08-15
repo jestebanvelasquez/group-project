@@ -46,6 +46,7 @@ model Eventos {
   id          String   @id @default(uuid())
   name        String   @db.VarChar(255)
   description String   @db.VarChar(255)
+  lugar       String   @db.VarBit(255)
   imagesEvent String[]
   duration    Float    @db.Real
   isActive    Boolean  @default(false)

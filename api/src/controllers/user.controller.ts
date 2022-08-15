@@ -37,21 +37,31 @@ const userController = {
                 });
             }
 
-            //Insert user into db
-            return prisma.usuario.create({
-                data: {
-                    email,
-                    password: hash,
-                    idPersona
+            //Validar que el correo ingresado no esté en la base de datos
+            return prisma.usuario.findUnique({
+                where: {
+                    email
                 }
-            }).then(user => {
-                return res.status(201).json(user);
+            }).then((verifyEmail: object | null): any => {
+                if (verifyEmail === null) {
+                    //Insert user into db
+                    return prisma.usuario.create({
+                        data: {
+                            email,
+                            password: hash,
+                            idPersona
+                        }
+                    });
+                } else {
+                    throw 'Ya hay un usuario creado con el mismo email.';
+                }
+            }).then((user) => {
+                res.status(201).json({ user });
             }).catch(error => {
                 return res.status(500).json({
-                    message: error.message,
                     error: error
                 });
-            })
+            });
         });
     },
     login: async (req: Request, res: Response, _next: NextFunction) => {

@@ -76,10 +76,10 @@ const artistController = {
         }
     },
     createArtist: async (req: Request, res: Response, _next: NextFunction): Promise<any> => {
-        const { name, img, id } = req.body;
+        const { name, img, idUsuario } = req.body;
         try {
             const isUsuario = await prisma.usuario.findUnique({
-                where: { id }
+                where: { id: idUsuario }
             });
 
             if (!isUsuario) {
@@ -88,19 +88,19 @@ const artistController = {
 
             const isArtist: any = await prisma.artista.findMany({
                 where: {
-                    OR: [{ name }, { AND: { idUsuario: id } }]
+                    OR: [{ name }, { AND: { idUsuario: idUsuario } }]
                 }
             });
 
             if (isArtist.length > 0) {
-                throw `Ya hay un artista con el nombre ${name} o el id ${id}, verifica nuevamente por favor.`;
+                throw `Ya hay un artista con el nombre ${name} o el id ${idUsuario}, verifica nuevamente por favor.`;
             }
 
             const createArtist = await prisma.artista.create({
                 data: {
                     name: `${name}`,
                     img: `${img}`,
-                    idUsuario: `${id}`
+                    idUsuario: `${idUsuario}`
                 }
             });
 
