@@ -46,20 +46,20 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //creando  el token para el ADMIN:
         if (newUser.rol === 'ADMIN') {
             const adminToken = jsonwebtoken_1.default.sign({ user_id: newUser.id }, process.env.TOKEN_SECRET_ADMIN);
-            return res.status(200).json({ succes: true, data: fullName, token: adminToken });
+            return res.status(200).json({ succes: true, data: fullName, token: adminToken, rol: newUser.rol });
             // return res.header('auth-token', adminToken).json({ succes: true, data: newUser.email })
         }
         console.log(newUser.id);
         //creando  el token para el ARTIST:
         if (newUser.rol === 'ARTIST') {
             const artistToken = jsonwebtoken_1.default.sign({ user_id: newUser.id }, process.env.TOKEN_SECRET_ARTIST);
-            return res.status(200).json({ succes: true, data: fullName, token: artistToken });
+            return res.status(200).json({ succes: true, data: fullName, token: artistToken, rol: newUser.rol });
             // return res.header('auth-token', artistToken).json({ succes: true, data: newUser.email })
         }
         //creando  el token para el USER:
         if (newUser.rol === 'CONTRACTOR') {
             const accessToken = jsonwebtoken_1.default.sign({ user_id: newUser.id }, process.env.TOKEN_SECRET_CONTRACTOR);
-            return res.status(200).json({ succes: true, data: fullName, token: accessToken });
+            return res.status(200).json({ succes: true, data: fullName, token: accessToken, rol: newUser.rol });
             // return res.header('auth-token', accessToken).json({ succes: true, data: newUser.email })
         }
     }
