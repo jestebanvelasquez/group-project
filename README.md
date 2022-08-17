@@ -12,7 +12,7 @@
 - Contara con un panel de administracion para evaluar y controlar el funcionamiento de la App
 - Como Admin poder verificar, editar, banear, agregar , tanto usuarios como artistas. 
 
-```
+
 
 ## Tecnologias Utilizadas:
 __Back:__ 
