@@ -1,51 +1,33 @@
 # group-project
 
 
-<p align="right">
-  <img height="200" src="./videogame.png" />
-</p>
+
+ ![Captura de Pantalla 2022-08-17 a la(s) 1 42 31 a  m](https://user-images.githubusercontent.com/67343500/185247948-03e232de-333c-45e2-af6b-757ef5261789.png)
 
 ## Objetivos del Proyecto
 
-- Construir una App utlizando React, Redux, Node y Sequelize.
-- Afirmar y conectar los conceptos aprendidos en la carrera.
-- Aprender mejores prácticas.
-- Aprender y practicar el workflow de GIT.
-- Usar y practicar testing.
+- Construir una app donde se ofrecen servicios de entretenimiento artistico.
+- Un Usuario podrá registrarse para contratar dichos servicios.
+- Un artista podra registrarse y editar su show artistico.
+- Contara con un panel de administracion para evaluar y controlar el funcionamiento de la App
+- Como Admin poder verificar, editar, banear, agregar , tanto usuarios como artistas. 
 
-
-Actualmente las versiónes necesarias son:
-
-- __Node__: 12.18.3 o mayor
-- __NPM__: 6.14.16 o mayor
-
-Para verificar que versión tienen instalada:
-
-```bash
-node -v
-npm -v
 ```
 
 ## Tecnologias Utilizadas:
 __Back:__ 
 - __PostgreSql__
-- __Sequelize__
+- __Prisma__
 - __Express__
-- __NodeJs__
+- __Typescript__
 
 
 __Front:__ 
-- __react__
-- __react-dom__
-- __react-router-dom__
-- __redux__
-- __react-redux__
+- __React__
+- __React-dom__
+- __React-router-dom__
+- __Redux Toolkit__
+- __React-redux__
+- __Typescript__
+- __Talwind__
 
-## Descripcion del Proytecto:
-
-La idea general fué desarrollar una aplicacion con una base de datos en la cual se puedan ver los distintos videojuegos disponibles junto con información relevante de los mismos utilizando la api externa [rawg](https://rawg.io/apidocs) y a partir de ella poder, entre otras cosas:
-
-- Buscar videjuegos
-- Filtrarlos / Ordenarlos
-- Agregar nuevos videojuegos
-- Eliminar videojuegos
