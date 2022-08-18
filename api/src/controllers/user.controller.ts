@@ -143,7 +143,12 @@ const userController = {
         try {
             const users = await prisma.usuario.findMany({
                 include: {
-                    persona: true
+                    persona: true,
+                    eventosCompras: {
+                        include: {
+                            eventos: true
+                        }
+                    }
                 }
             })
             if (!users) {
@@ -154,6 +159,34 @@ const userController = {
             res.status(500).json({
                 message: error
             })
+        }
+    },
+    getRoleByToken: async (_req: Request, res: Response, _next: NextFunction): Promise<any> => {
+        try {
+            const token = res.locals.jwt//get id user and token from middleware
+            const role = await prisma.rolesUsuarios.findMany({
+                select: {
+                    idRol: false,
+                    idUsuario: false,
+                    roles: {
+                        select: {
+                            id: true,
+                            nombre: true
+                        }
+                    }
+                },
+                where: {
+                    idUsuario: token.id
+                }
+            });
+            if (role && role.length === 0) {
+                throw 'Al parecer el usuario consultado no tiene roles inscritos.';
+            }
+            res.status(200).send(role);
+        } catch (error) {
+            res.status(500).json({
+                message: error
+            });
         }
     }
 }
