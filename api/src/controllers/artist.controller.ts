@@ -61,6 +61,15 @@ const artistController = {
                         include: {
                             persona: true
                         }
+                    },
+                    eventos: {
+                        include: {
+                            eventosCategorias: {
+                                include: {
+                                    categorias: true
+                                }
+                            }
+                        }
                     }
                 }
             });

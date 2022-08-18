@@ -28,36 +28,43 @@ model Usuario {
   token          String?
   idPersona      String           @unique
   artista        Artista?
-  eventosUsuario UsuarioEventos[]
-  roles          RolesUsuarios[]
+  usuarioEventos UsuarioEventos[]
+  rolesUsuarios  RolesUsuarios[]
   eventosCompras EventosCompras[]
 }
 
 model Artista {
-  id        String    @id @default(uuid())
-  name      String    @unique @db.VarChar(255)
-  img       String    @db.VarChar(255)
-  usuario   Usuario   @relation(fields: [idUsuario], references: [id])
-  idUsuario String    @unique
-  eventos   Eventos[]
+  id          String    @id @default(uuid())
+  name        String    @unique @db.VarChar(255)
+  descripcion String?   @db.VarChar(500)
+  img         String    @db.VarChar(255)
+  usuario     Usuario   @relation(fields: [idUsuario], references: [id])
+  idUsuario   String    @unique
+  eventos     Eventos[]
 }
 
 model Eventos {
   id          String   @id @default(uuid())
   name        String   @db.VarChar(255)
-  description String   @db.VarChar(255)
-  lugar       String   @db.VarBit(255)
+  description String   @db.VarChar(500)
+  lugar       String   @db.VarChar(255)
   imagesEvent String[]
   duration    Float    @db.Real
   isActive    Boolean  @default(false)
-  priceTime   Float    @db.Real
-  priceDay    Float    @db.Real
+  price       Float    @db.Real
+  tiempo      Tiempo   @default(horas)
 
-  artista        Artista             @relation(fields: [artistaId], references: [id])
-  artistaId      String
-  categorias     EventosCategorias[]
-  UsuarioEventos UsuarioEventos[]
-  compras        EventosCompras[]
+  artista           Artista             @relation(fields: [artistaId], references: [id])
+  artistaId         String
+  eventosCategorias EventosCategorias[]
+  UsuarioEventos    UsuarioEventos[]
+  eventosCompras    EventosCompras[]
+}
+
+enum Tiempo {
+  dias
+  horas
+  minutos
 }
 
 model UsuarioEventos {
@@ -79,15 +86,15 @@ model EventosCategorias {
 }
 
 model Categorias {
-  id      String              @id @default(uuid())
-  name    String              @db.VarChar(255)
-  eventos EventosCategorias[]
+  id                String              @id @default(uuid())
+  name              String              @db.VarChar(255)
+  eventosCategorias EventosCategorias[]
 }
 
 model Compras {
-  id      String           @id @default(uuid())
-  code    String           @db.VarChar(255)
-  eventos EventosCompras[]
+  id            String           @id @default(uuid())
+  code          String           @db.VarChar(255)
+  eventoCompras EventosCompras[]
 }
 
 model EventosCompras {
@@ -101,9 +108,9 @@ model EventosCompras {
 }
 
 model Roles {
-  id       String          @id @default(uuid())
-  nombre   String          @db.VarChar(255)
-  usuarios RolesUsuarios[]
+  id            String          @id @default(uuid())
+  nombre        String          @db.VarChar(255)
+  rolesUsuarios RolesUsuarios[]
 }
 
 model RolesUsuarios {
