@@ -179,9 +179,6 @@ const userController = {
                     idUsuario: token.id
                 }
             });
-            if (role && role.length === 0) {
-                throw 'Al parecer el usuario consultado no tiene roles inscritos.';
-            }
             res.status(200).send(role);
         } catch (error) {
             res.status(500).json({
